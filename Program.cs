@@ -1,8 +1,16 @@
+using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<MyContext>(options=>options.UseSqlServer(connectionString));
+
+
 
 var app = builder.Build();
 
@@ -21,6 +29,18 @@ app.UseRouting();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+    endpoints.MapGet("/Rooms", async context =>
+    {
+        using var db = context.RequestServices.GetService<MyContext>();
+        var items = await db.Rooms.ToListAsync();
+        await context.Response.WriteAsJsonAsync(items);
+    });
+});
+
 
 app.MapFallbackToFile("index.html");
 

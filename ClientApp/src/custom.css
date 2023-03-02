@@ -16,3 +16,13 @@ code {
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
+.img-icon {
+  width: 30px;
+  height: 30px;
+  border: 0.5px solid #333;
+  padding: 2px;
+}
+.img-logo {
+  max-width: 250px;
+}
+

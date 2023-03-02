@@ -157,6 +157,8 @@ csx/
 ecf/
 rcf/
 
+.env
+*.env
 # Microsoft Azure ApplicationInsights config file
 ApplicationInsights.config
 
