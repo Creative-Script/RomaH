@@ -2,4 +2,4 @@
 
 ### DESCRIPTION
 
-Hotel management suite
+Hotel management suite.
