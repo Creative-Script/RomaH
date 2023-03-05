@@ -1,6 +1,8 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +12,10 @@ var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<MyContext>(options=>options.UseSqlServer(connectionString));
 
-
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+});
 
 var app = builder.Build();
 
@@ -21,7 +26,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
@@ -30,17 +35,11 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
 
-app.UseEndpoints(endpoints =>
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    endpoints.MapControllers();
-    endpoints.MapGet("/Rooms", async context =>
-    {
-        using var db = context.RequestServices.GetService<MyContext>();
-        var items = await db.Rooms.ToListAsync();
-        await context.Response.WriteAsJsonAsync(items);
-    });
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
 });
-
 
 app.MapFallbackToFile("index.html");
 
