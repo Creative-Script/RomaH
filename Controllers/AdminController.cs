@@ -18,10 +18,10 @@ namespace romahotel.Controllers;
 [Route("api/[controller]")]
 public class AdminController : ControllerBase
 {
-    private readonly ILogger<AuthController> _logger;
+    private readonly ILogger<AdminController> _logger;
     private readonly MyContext _context;
 
-    public AdminController(MyContext context,ILogger<AuthController> logger)
+    public AdminController(MyContext context, ILogger<AdminController> logger)
     {
         _context = context;
         _logger = logger;
@@ -30,11 +30,12 @@ public class AdminController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Post([FromBody] User newUser)
     {
-        newUser.Password  = HashPassword(newUser.Password);
-        
-        var ExistingAdmin = _context.Users.FirstOrDefault(u=> u.UserType=="admin");
-        if( ExistingAdmin!= null){
-            return BadRequest("user exists");
+        newUser.Password = HashPassword(newUser.Password);
+
+        var ExistingAdmin = _context.Users.FirstOrDefault(u => u.UserType == "admin");
+        if (ExistingAdmin != null)
+        {
+            return BadRequest(new { message = "user exists" });
         }
         Console.WriteLine(_context.Users.Add(newUser));
         await _context.SaveChangesAsync();
@@ -46,9 +47,10 @@ public class AdminController : ControllerBase
     {
         return await _context.Users.ToListAsync();
     }
-    
 
-    private string HashPassword(string password) {
+
+    private string HashPassword(string password)
+    {
         string hashedPassword;
         using (MD5 md5 = MD5.Create())
         {
