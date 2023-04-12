@@ -3,14 +3,34 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+var securityKey = Environment.GetEnvironmentVariable("SECURITY_KEY");
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<MyContext>(options=>options.UseSqlServer(connectionString));
+builder.Services.AddAuthentication(options=>{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options=>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters{
+        ValidateIssuer = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(securityKey)),
+        ValidateIssuerSigningKey =true,
+        ValidateAudience= false
+    };
+});
+
 
 builder.Services.AddSwaggerGen(c =>
 {
