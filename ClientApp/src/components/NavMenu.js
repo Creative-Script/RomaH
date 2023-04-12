@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
-// import logoImage from '../../images/logo.png'
+
 import { Link } from 'react-router-dom';
 import './NavMenu.css';
+import { logOut } from '../utils/logout';
+import { isAuthorized } from '../utils/userTypes';
+import SignIn from './SignIn';
 
 export class NavMenu extends Component {
   static displayName = NavMenu.name;
@@ -12,12 +15,13 @@ export class NavMenu extends Component {
 
     this.toggleNavbar = this.toggleNavbar.bind(this);
     this.state = {
-      collapsed: true
+      collapsed: true,
     };
   }
 
   toggleNavbar () {
     this.setState({
+      ...this.state,
       collapsed: !this.state.collapsed
     });
   }
@@ -33,14 +37,15 @@ export class NavMenu extends Component {
               <NavItem>
                 <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
               </NavItem>
-              <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/login">Login</NavLink>
-              </NavItem>
+              <SignIn/>
               <NavItem>
                 <NavLink tag={Link} className="text-dark" to="/gallery">Gallery</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink tag={Link} className="text-dark" to="/gallery">Bookings</NavLink>
+                <NavLink tag={Link} className="text-dark" to="/booking">Bookings</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} className="text-dark" to="/fetch-data">Fetch</NavLink>
               </NavItem>
             </ul>
           </Collapse>

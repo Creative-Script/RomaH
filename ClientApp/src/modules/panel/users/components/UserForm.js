@@ -1,12 +1,12 @@
 
 import { Formik, Form } from 'formik';
-import Loader from '../../../components/loader';
+import Loader from '../../../../components/loader';
 import * as Yup from 'yup';
-import InputField from '../../../components/inputField.js';
+import InputField from '../../../../components/inputField';
 import { Link } from 'react-router-dom';
 
-export default function Contact({ user, handleSubmit, isProcessing }) {
-    // const { user, handleSubmit, isProcessing } = props;
+export default function UserForm(props) {
+    const { user, handleSubmit, isProcessing } = props;
     const validationSchema = Yup.object().shape({
         username: Yup.string()
             .required("username is required")
@@ -18,7 +18,7 @@ export default function Contact({ user, handleSubmit, isProcessing }) {
     });
 
     return (
-        <div className='row'>
+        <div>
             <Formik
                 initialValues={user}
                 onSubmit={handleSubmit}
